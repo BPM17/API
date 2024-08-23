@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from apiDb import ApiDb
 
 app = FastAPI()
 
@@ -6,7 +7,7 @@ items = []
 
 @app.get("/")
 def root():
-    return{"Title: This API is intended to consume movies data, from a DB created in mongoDB"}
+    return{"Title: This API is intended to consume movies data, from a DB created in mongoDB{}".format(items)}
 
 @app.post("/items")
 def createItem(item: str):
@@ -15,6 +16,13 @@ def createItem(item: str):
 
 @app.get("/items/{itemId}")
 def getItem(itemId : int) -> str:
-    print(type(items))
-    item = items[itemId]
-    return item
+    try:
+        item = items[itemId]
+        return item
+    except Exception as e:
+        print(e.msg)
+
+@app.get("/getItems")
+def getItems():
+    print("The items are{}".format(items))
+    return items
