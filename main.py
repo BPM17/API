@@ -1,12 +1,14 @@
+# Imports
 from fastapi import FastAPI
 
 from apiDb import ApiDb
 from Car import Car
 
+#Objects and Variables
 app = FastAPI()
-
 items = []
 cars = []
+db = ApiDb()
 
 @app.get("/")
 def root():
@@ -34,7 +36,12 @@ def getItems():
 @app.put("/Car/{Car}")
 async def PostCar(car : Car):
     cars.append({"Car" : car})
-    db = ApiDb()
     db.dict = car
     db.ProcessToTable()
-    return cars
+    return "The Car has been added correctly"
+
+# This request should response all the objects stored in the DB
+@app.get("/Car")
+async def GetCars():
+    data = db.GetTable()
+    return data

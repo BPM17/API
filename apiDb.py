@@ -24,6 +24,11 @@ class ApiDb ():
         self.cursor.execute(self.table)
         print("The table has been created correctly")
 
+    def GetTable(self):
+        self.cursor.execute("""SELECT * FROM Cars""")
+        data = self.cursor.fetchall()
+        return data
+
     def AddToTable(self):
         self.cursor.execute(self.table)
         print("Data have been added correctly")
