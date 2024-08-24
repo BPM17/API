@@ -1,9 +1,12 @@
 from fastapi import FastAPI
+
 from apiDb import ApiDb
+from Car import Car
 
 app = FastAPI()
 
 items = []
+cars = []
 
 @app.get("/")
 def root():
@@ -26,3 +29,12 @@ def getItem(itemId : int) -> str:
 def getItems():
     print("The items are{}".format(items))
     return items
+
+# Car is the object created from Car.py it used BaseModel to be created
+@app.put("/Car/{Car}")
+async def PostCar(car : Car):
+    cars.append({"Car" : car})
+    db = ApiDb()
+    db.dict = car
+    db.ProcessToTable()
+    return cars

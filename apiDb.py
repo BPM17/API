@@ -1,4 +1,5 @@
 import sqlite3
+import json
 
 
 class ApiDb ():
@@ -10,6 +11,7 @@ class ApiDb ():
         except:
             print("something went wrong")
         self.cursor = self.conn.cursor()
+        self.dict = {}
         self.table = ""
 
     def CreateDB(self):
@@ -23,7 +25,6 @@ class ApiDb ():
         print("The table has been created correctly")
 
     def AddToTable(self):
-        print(self.table)
         self.cursor.execute(self.table)
         print("Data have been added correctly")
         self.conn.commit()
@@ -33,11 +34,33 @@ class ApiDb ():
         for row in data:
             print(row)
 
+    def ProcessToTable(self):
+        print(self.dict)
+        self.table = ""
+        self.SeparetingIntoTable()
+        self.CreateSentenceDB()
+        self.AddToTable()
 
-db = ApiDb()
+    def SeparetingIntoTable(self):
+        for key, value in self.dict:
+            table =[]
+            table.append(value)
+            self.table = self.table +"'"+ str(value)+"',"
+            print(f"This is what is going to be saved in the table {self.table}")
 
-db.table = """INSERT INTO CARS VALUES('Ford', 'Mustang', 'Red', '1995')"""
+    def CreateSentenceDB(self):
+        l = list(self.table)
+        del(l[len(self.table)-1])
+        self.table = "".join(l)
+        self.table =f"INSERT INTO CARS VALUES({self.table})"
+        print("Se han procesado los valores correctamente")
 
-db.AddToTable()
-db.SeeRow()
-db.conn.close()
+if __name__ == "__main__":
+    db = ApiDb()
+    db.table = """ CREATE TABLE IF NOT EXISTS CARS(
+        Brand VARCHAR(255) NOT NULL,
+        Model VARCHAR(255) NOT NULL,
+        Color VARCHAR(255) NOT NULL,
+        Year INTEGER
+    ) """
+    db.CreateTable()
