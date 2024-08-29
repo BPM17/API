@@ -45,3 +45,9 @@ async def PostCar(car : Car):
 async def GetCars():
     data = db.GetTable()
     return data
+
+# This request is to get a car with an specific Id
+@app.get("/Car/{carId}")
+def GetCar(carId:str):
+    data = db.GetItem(carId)
+    return data

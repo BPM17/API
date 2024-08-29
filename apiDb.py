@@ -6,7 +6,7 @@ class ApiDb ():
     def __init__(self):
         self.apiDb = "ApiDb.db"
         try:
-            self.conn = sqlite3.connect(self.apiDb)
+            self.conn = sqlite3.connect(self.apiDb, check_same_thread=False)
             print("connection stablished")
         except:
             print("something went wrong")
@@ -28,11 +28,23 @@ class ApiDb ():
         self.cursor.execute("""SELECT * FROM Cars""")
         data = self.cursor.fetchall()
         return data
+    
+    def GetItem(self, carId):
+        print("Hola mundo ", type(carId))
+        self.cursor.execute("""SELECT *
+                                FROM Cars
+                                WHERE id = {}""".format(carId))
+        data = self.cursor.fetchall()
+        print(data)
+        return data
 
     def AddToTable(self):
-        self.cursor.execute(self.table)
-        print("Data have been added correctly")
-        self.conn.commit()
+        try:
+            self.cursor.execute(self.table)
+            print("Data have been added correctly")
+            self.conn.commit()
+        except Exception as e:
+            print("There is an error {}".format(e))
 
     def SeeRow(self):
         data = self.cursor.execute('''SELECT * FROM Cars''')
@@ -63,9 +75,11 @@ class ApiDb ():
 if __name__ == "__main__":
     db = ApiDb()
     db.table = """ CREATE TABLE IF NOT EXISTS CARS(
+        id INTEGER PRIMARY KEY NOT NULL,
         Brand VARCHAR(255) NOT NULL,
         Model VARCHAR(255) NOT NULL,
         Color VARCHAR(255) NOT NULL,
         Year INTEGER
     ) """
-    db.CreateTable()
+    # db.CreateTable()
+    db.GetItem("2")
