@@ -7,6 +7,8 @@ This is intended to practice, it´s developed with FastAPI library to get use to
 - GET -> GetSpecificCar: It brings a specific record from DB it requires an ID.
 
 ## Comming up Endpoints
+- GET -> GetChanges: It brings all records in Chnages table.
+- GET -> GetSpecificChange: It brings an specific record using changeId or/and timestamp.
 
 ## TODO
 - Add user table to DB.
