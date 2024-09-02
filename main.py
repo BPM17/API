@@ -12,7 +12,7 @@ db = ApiDb()
 
 @app.get("/")
 def root():
-    return{"Title: This API is intended to consume movies data, from a DB created in mongoDB{}".format(items)}
+    return{"Title: This API is intended to consume vehicle data, from a DB created in from SQLite3"}
 
 @app.post("/items")
 def createItem(item: str):
