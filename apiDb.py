@@ -1,6 +1,6 @@
 import sqlite3
 import json
-
+from typing import List
 
 class ApiDb ():
     def __init__(self):
@@ -24,9 +24,13 @@ class ApiDb ():
         self.cursor.execute(self.table)
         print("The table has been created correctly")
 
-    def GetTable(self):
-        self.cursor.execute("""SELECT * FROM Cars""")
-        data = self.cursor.fetchall()
+    def GetTable(self, int):
+        if int == 0:
+            self.cursor.execute("""SELECT * FROM Cars""")
+            data = self.cursor.fetchall()
+        elif int == 1:
+            self.cursor.execute("""SELECT * FROM Users""")
+            data = self.cursor.fetchall()    
         return data
     
     def GetItem(self, carId):
@@ -40,7 +44,7 @@ class ApiDb ():
 
     def AddToTable(self):
         try:
-            self.cursor.execute(self.table)
+            self.cursor.execute(self.instruction, self.fields)
             print("Data have been added correctly")
             self.conn.commit()
         except Exception as e:
@@ -51,35 +55,42 @@ class ApiDb ():
         for row in data:
             print(row)
 
-    def ProcessToTable(self):
-        print(self.dict)
-        self.table = ""
-        self.SeparetingIntoTable()
-        self.CreateSentenceDB()
+    def SetInstructionAndFieldsCar(self):
+        self.instruction = '''INSERT INTO CARS(Brand, Model, Color, Year) VALUES(?,?,?,?)'''
+        self.fields = (self.dict["brand"], self.dict["model"], self.dict["color"], int(self.dict["year"]))
+
+    def SetInstructionAndFieldsUser(self):
+        self.instruction = '''INSERT INTO USERS(Name, LastName, Position) VALUES(?,?,?)'''
+        self.fields = (self.dict["name"], self.dict["lastName"], self.dict["position"])
+
+    def ProcessToCarTable(self):
+        self.SetInstructionAndFieldsCar()
         self.AddToTable()
 
-    def SeparetingIntoTable(self):
-        for key, value in self.dict:
-            table =[]
-            table.append(value)
-            self.table = self.table +"'"+ str(value)+"',"
-            print(f"This is what is going to be saved in the table {self.table}")
-
-    def CreateSentenceDB(self):
-        l = list(self.table)
-        del(l[len(self.table)-1])
-        self.table = "".join(l)
-        self.table =f"INSERT INTO CARS VALUES({self.table})"
-        print("Se han procesado los valores correctamente")
+    def ProcessToUserTable(self):
+        self.SetInstructionAndFieldsUser()
+        self.AddToTable()
+    
+        
 
 if __name__ == "__main__":
     db = ApiDb()
+    # Create CarTable
     db.table = """ CREATE TABLE IF NOT EXISTS CARS(
-        id INTEGER PRIMARY KEY NOT NULL,
+        id INTEGER PRIMARY KEY,
         Brand VARCHAR(255) NOT NULL,
         Model VARCHAR(255) NOT NULL,
         Color VARCHAR(255) NOT NULL,
-        Year INTEGER
+        Year INTEGER NOT NULL,
+        Timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
     ) """
-    # db.CreateTable()
-    db.GetItem("2")
+    # Create UserTable
+    # db.table = """CREATE TABLE IF NOT EXISTS USERS(
+    #     id INTEGER PRIMARY KEY,
+    #     Name VARCHAR(100) NOT NULL,
+    #     LastName VARCHAR(100) NOT NULL,
+    #     Position VARCHAR(100) NOT NULL,
+    #     Timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+    # )"""
+    db.CreateTable()
+    # db.GetItem("2")
