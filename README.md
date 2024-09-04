@@ -11,7 +11,7 @@ This is intended to practice, it´s developed with FastAPI library to get use to
 - GET -> GetSpecificChange: It brings an specific record using changeId or/and timestamp.
 
 ## TODO
-- ~~ Add user table to DB.~~
+- ~~Add user table to DB.~~
 - ~~Add changes table to DB.~~
 - ~~Add Timestamp, ID, UserID into changes table.~~
 - ~~Add UserID, Name, Position into user table.~~
