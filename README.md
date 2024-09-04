@@ -11,10 +11,10 @@ This is intended to practice, it´s developed with FastAPI library to get use to
 - GET -> GetSpecificChange: It brings an specific record using changeId or/and timestamp.
 
 ## TODO
-- ~~ Add user table to DB. ~~
-- ~~ Add changes table to DB. ~~
-- ~~ Add Timestamp, ID, UserID into changes table. ~~
-- ~~ Add UserID, Name, Position into user table. ~~
+- ~~ Add user table to DB.~~
+- ~~Add changes table to DB.~~
+- ~~Add Timestamp, ID, UserID into changes table.~~
+- ~~Add UserID, Name, Position into user table.~~
 - Add Authorization in requests.
 - Add Endpoint to get all the changes registered into Car table and append the record to Changes table also with a timestamp.
 - Add Endpoint to get a record from Changes table using the timestamp and also using an specific ID.
