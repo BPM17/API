@@ -12,7 +12,7 @@ class ApiDb ():
             print("something went wrong")
         self.cursor = self.conn.cursor()
         self.dict = {}
-        self.table = ""
+        self.table = []
 
     def CreateDB(self):
         try:
@@ -21,7 +21,8 @@ class ApiDb ():
             print(f"Something went wrong")
 
     def CreateTable(self):
-        self.cursor.execute(self.table)
+        for item in self.table:
+            self.cursor.execute(item)
         print("The table has been created correctly")
 
     def GetTable(self, int):
@@ -33,13 +34,19 @@ class ApiDb ():
             data = self.cursor.fetchall()    
         return data
     
-    def GetItem(self, carId):
-        print("Hola mundo ", type(carId))
-        self.cursor.execute("""SELECT *
-                                FROM Cars
-                                WHERE id = {}""".format(carId))
-        data = self.cursor.fetchall()
-        print(data)
+    def GetItem(self, int, str):
+        if int == 0:
+            self.cursor.execute("""SELECT *
+                                    FROM Cars
+                                    WHERE id = {}""".format(str))
+            data = self.cursor.fetchall()
+            print(data)
+        elif int == 1:
+            self.cursor.execute("""SELECT *
+                                    FROM Users
+                                    WHERE id = {}""".format(str))
+            data = self.cursor.fetchall()
+            print(data)
         return data
 
     def AddToTable(self):
@@ -60,8 +67,12 @@ class ApiDb ():
         self.fields = (self.dict["brand"], self.dict["model"], self.dict["color"], int(self.dict["year"]))
 
     def SetInstructionAndFieldsUser(self):
-        self.instruction = '''INSERT INTO USERS(Name, LastName, Position) VALUES(?,?,?)'''
-        self.fields = (self.dict["name"], self.dict["lastName"], self.dict["position"])
+        self.instruction = '''INSERT INTO USERS(Name, LastName, Email, Password, Position) VALUES(?,?,?,?,?)'''
+        self.fields = (self.dict["name"], self.dict["lastName"], self.dict["email"], self.dict["password"], self.dict["position"])
+
+    def SetInstructionAndFieldsChanges(self):
+        self.instruction = '''INSERT INTO CHANGES(UserId, CarId) VALUES(?,?)'''
+        self.fields = (self.dict["userId"], self.dict["carId"])
 
     def ProcessToCarTable(self):
         self.SetInstructionAndFieldsCar()
@@ -70,27 +81,59 @@ class ApiDb ():
     def ProcessToUserTable(self):
         self.SetInstructionAndFieldsUser()
         self.AddToTable()
+
+    def ProcessToRegister(self):
+        self.SetInstructionAndFieldsChanges()
+        self.AddToTable()
+
+    def LogIn(self):
+        data = self.GetUser()
+        data = self.AutenticateUser(data)
+        return data
     
-        
+    def GetUser(self):
+        self.instruction = """SELECT id, Name, password FROM USERS WHERE Email = \"{}\" AND Password = \"{}\";""".format(self.dict["email"], self.dict["password"])
+        print(self.instruction)
+        self.cursor.execute(self.instruction)
+        data = self.cursor.fetchall()
+        print(data)
+        return data
+    
+    def AutenticateUser(self, data):
+        if len(data) != 0:
+            print("I have found this register\n{}".format(data))
+            return "Autenticated"
+        else:
+            return "Credentials wrong or user do not exist"
+
 
 if __name__ == "__main__":
     db = ApiDb()
     # Create CarTable
-    db.table = """ CREATE TABLE IF NOT EXISTS CARS(
+    db.table.append(""" CREATE TABLE IF NOT EXISTS CARS(
         id INTEGER PRIMARY KEY,
         Brand VARCHAR(255) NOT NULL,
         Model VARCHAR(255) NOT NULL,
         Color VARCHAR(255) NOT NULL,
         Year INTEGER NOT NULL,
         Timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
-    ) """
+    ) """)
     # Create UserTable
-    # db.table = """CREATE TABLE IF NOT EXISTS USERS(
-    #     id INTEGER PRIMARY KEY,
-    #     Name VARCHAR(100) NOT NULL,
-    #     LastName VARCHAR(100) NOT NULL,
-    #     Position VARCHAR(100) NOT NULL,
-    #     Timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
-    # )"""
+    db.table.append("""CREATE TABLE IF NOT EXISTS USERS(
+        id INTEGER PRIMARY KEY,
+        Name VARCHAR(100) NOT NULL,
+        LastName VARCHAR(100) NOT NULL,
+        Email VARCHAR(100) NOT NULL,
+        Password VARCHAR(100) NOT NULL,
+        Position VARCHAR(100) NOT NULL,
+        Timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+    )""")
+    # Create ChangesTable
+    db.table.append(""" CREATE TABLE IF NOT EXISTS CHANGES(
+        id INTEGER PRIMARY KEY,
+        userId INTEGER,
+        carId INTEGER,
+        Timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+    ) """)
     db.CreateTable()
     # db.GetItem("2")
