@@ -1,6 +1,10 @@
 import sqlite3
 import json
+import os
+import time
 from typing import List
+from generateToken import Token
+from timeit import default_timer as timer
 
 class ApiDb ():
     def __init__(self):
@@ -13,6 +17,8 @@ class ApiDb ():
         self.cursor = self.conn.cursor()
         self.dict = {}
         self.table = []
+        self.token = Token()
+        self.init = float
 
     def CreateDB(self):
         try:
@@ -63,26 +69,38 @@ class ApiDb ():
             print(row)
 
     def SetInstructionAndFieldsCar(self):
+        self.StartCounting(timer())
+        self.CompareTiming()
         self.instruction = '''INSERT INTO CARS(Brand, Model, Color, Year) VALUES(?,?,?,?)'''
         self.fields = (self.dict["brand"], self.dict["model"], self.dict["color"], int(self.dict["year"]))
 
     def SetInstructionAndFieldsUser(self):
+        self.StartCounting(timer())
+        self.CompareTiming()
         self.instruction = '''INSERT INTO USERS(Name, LastName, Email, Password, Position) VALUES(?,?,?,?,?)'''
         self.fields = (self.dict["name"], self.dict["lastName"], self.dict["email"], self.dict["password"], self.dict["position"])
 
     def SetInstructionAndFieldsChanges(self):
+        self.StartCounting(timer())
+        self.CompareTiming()
         self.instruction = '''INSERT INTO CHANGES(UserId, CarId) VALUES(?,?)'''
         self.fields = (self.dict["userId"], self.dict["carId"])
 
     def ProcessToCarTable(self):
+        self.StartCounting(timer())
+        self.CompareTiming()
         self.SetInstructionAndFieldsCar()
         self.AddToTable()
 
     def ProcessToUserTable(self):
+        self.StartCounting(timer())
+        self.CompareTiming()
         self.SetInstructionAndFieldsUser()
         self.AddToTable()
 
     def ProcessToRegister(self):
+        self.StartCounting(timer())
+        self.CompareTiming()
         self.SetInstructionAndFieldsChanges()
         self.AddToTable()
 
@@ -93,18 +111,33 @@ class ApiDb ():
     
     def GetUser(self):
         self.instruction = """SELECT id, Name, password FROM USERS WHERE Email = \"{}\" AND Password = \"{}\";""".format(self.dict["email"], self.dict["password"])
-        print(self.instruction)
         self.cursor.execute(self.instruction)
         data = self.cursor.fetchall()
-        print(data)
         return data
     
     def AutenticateUser(self, data):
         if len(data) != 0:
-            print("I have found this register\n{}".format(data))
+            self.token = self.token.GetToken()
+            self.init = timer()
+            self.StartCounting(timer())
             return "Autenticated"
         else:
             return "Credentials wrong or user do not exist"
+        
+    def StartCounting(self, end):
+        try:
+            self.timing = end - self.init
+            print("This is the timing {} and token {}".format(self.timing, self.token))
+        except Exception as e:
+            print(e)
+            
+    def CompareTiming(self):
+        if self.timing > 60.0:
+            print(self.timing, self.timing>60.0)
+            print("The token has expire please logIn again")
+        else:
+            print(self.timing, self.timing>60.0)
+            print("The token remains useful")
 
 
 if __name__ == "__main__":

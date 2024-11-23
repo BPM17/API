@@ -1,8 +1,10 @@
-# Imports
-from fastapi import FastAPI, Depends
-from fastapi.security import OAuth2PasswordBearer
+# General Imports
+from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from typing import Annotated
+from passlib.context import CryptContext
 
+# My Imports
 from apiDb import ApiDb
 from Car import Car
 from User import User
@@ -16,6 +18,7 @@ users = []
 cars = []
 db = ApiDb()
 
+# Functions
 @app.get("/")
 def root():
     return{"Title: This API is intended to consume vehicle data, from a DB created in from SQLite3"}
