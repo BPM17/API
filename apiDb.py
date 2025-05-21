@@ -1,6 +1,6 @@
 import sqlite3
 import json
-import os
+import os.path
 import time
 from typing import List
 from generateToken import Token
@@ -11,16 +11,64 @@ class ApiDb ():
         self.apiDb = "ApiDb.db"
         try:
             self.conn = sqlite3.connect(self.apiDb, check_same_thread=False)
-            print("connection stablished")
+            print("Connection stablished")
         except:
-            print("something went wrong")
+            print("Something went wrong")
         self.cursor = self.conn.cursor()
         self.dict = {}
         self.table = []
         self.token = Token()
         self.init = float
+        self.CheckDB()
+        
 
-    def CreateDB(self):
+    def CheckDB(self):
+        try:
+            if os.path.isfile("ApiDb.db"):
+                print("The file exist")
+                try:
+                    self.GetTable(0)
+                except Exception as e:
+                    self.RunTableLines()
+                    print("The tables do not exist in the DB")
+                    print(f'caught{type(e)}: e{e}')
+        except Exception as e:
+            print("File not found")
+            print(f'caught{type(e)}: e{e}')
+            self.CreeateDB()
+
+    def RunTableLines(self):
+        print("Creating table lines")
+        # Create CarTable
+        self.table.append(""" CREATE TABLE IF NOT EXISTS CARS(
+            id INTEGER PRIMARY KEY,
+            Brand VARCHAR(255) NOT NULL,
+            Model VARCHAR(255) NOT NULL,
+            Color VARCHAR(255) NOT NULL,
+            Year INTEGER NOT NULL,
+            Timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+        ) """)
+        # Create UserTable
+        self.table.append("""CREATE TABLE IF NOT EXISTS USERS(
+            id INTEGER PRIMARY KEY,
+            Name VARCHAR(100) NOT NULL,
+            LastName VARCHAR(100) NOT NULL,
+            Email VARCHAR(100) NOT NULL,
+            Password VARCHAR(100) NOT NULL,
+            Position VARCHAR(100) NOT NULL,
+            Timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+        )""")
+        # Create ChangesTable
+        self.table.append(""" CREATE TABLE IF NOT EXISTS CHANGES(
+            id INTEGER PRIMARY KEY,
+            userId INTEGER,
+            carId INTEGER,
+            Timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+        ) """)
+        self.CreateTable()
+        # db.GetItem("2")
+
+    def CreeateDB(self):
         try:
             print(f"API DB is already created as {self.apiDb}")
         except:
@@ -69,38 +117,26 @@ class ApiDb ():
             print(row)
 
     def SetInstructionAndFieldsCar(self):
-        self.StartCounting(timer())
-        self.CompareTiming()
         self.instruction = '''INSERT INTO CARS(Brand, Model, Color, Year) VALUES(?,?,?,?)'''
         self.fields = (self.dict["brand"], self.dict["model"], self.dict["color"], int(self.dict["year"]))
 
     def SetInstructionAndFieldsUser(self):
-        self.StartCounting(timer())
-        self.CompareTiming()
-        self.instruction = '''INSERT INTO USERS(Name, LastName, Email, Password, Position) VALUES(?,?,?,?,?)'''
+        self.instruction = '''INSERT INTO USERS(Name, LastName, Email, Password, Position) VALUES(?,?,?,?)'''
         self.fields = (self.dict["name"], self.dict["lastName"], self.dict["email"], self.dict["password"], self.dict["position"])
 
     def SetInstructionAndFieldsChanges(self):
-        self.StartCounting(timer())
-        self.CompareTiming()
         self.instruction = '''INSERT INTO CHANGES(UserId, CarId) VALUES(?,?)'''
         self.fields = (self.dict["userId"], self.dict["carId"])
 
     def ProcessToCarTable(self):
-        self.StartCounting(timer())
-        self.CompareTiming()
         self.SetInstructionAndFieldsCar()
         self.AddToTable()
 
     def ProcessToUserTable(self):
-        self.StartCounting(timer())
-        self.CompareTiming()
         self.SetInstructionAndFieldsUser()
         self.AddToTable()
 
     def ProcessToRegister(self):
-        self.StartCounting(timer())
-        self.CompareTiming()
         self.SetInstructionAndFieldsChanges()
         self.AddToTable()
 
@@ -139,34 +175,7 @@ class ApiDb ():
             print(self.timing, self.timing>60.0)
             print("The token remains useful")
 
-
+# The __main__ function will be used to create the DB thats why there wasn't registers after 
+# reactivate the API
 if __name__ == "__main__":
     db = ApiDb()
-    # Create CarTable
-    db.table.append(""" CREATE TABLE IF NOT EXISTS CARS(
-        id INTEGER PRIMARY KEY,
-        Brand VARCHAR(255) NOT NULL,
-        Model VARCHAR(255) NOT NULL,
-        Color VARCHAR(255) NOT NULL,
-        Year INTEGER NOT NULL,
-        Timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
-    ) """)
-    # Create UserTable
-    db.table.append("""CREATE TABLE IF NOT EXISTS USERS(
-        id INTEGER PRIMARY KEY,
-        Name VARCHAR(100) NOT NULL,
-        LastName VARCHAR(100) NOT NULL,
-        Email VARCHAR(100) NOT NULL,
-        Password VARCHAR(100) NOT NULL,
-        Position VARCHAR(100) NOT NULL,
-        Timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
-    )""")
-    # Create ChangesTable
-    db.table.append(""" CREATE TABLE IF NOT EXISTS CHANGES(
-        id INTEGER PRIMARY KEY,
-        userId INTEGER,
-        carId INTEGER,
-        Timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
-    ) """)
-    db.CreateTable()
-    # db.GetItem("2")
