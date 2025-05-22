@@ -18,5 +18,7 @@ This is intended to practice, it´s developed with FastAPI library to get use to
 - Add Authorization in requests.
 - Add Endpoint to get all the changes registered into Car table and append the record to Changes table also with a timestamp.
 - Add Endpoint to get a record from Changes table using the timestamp and also using an specific ID.
+- Solve how to introduce Auth token module to API and all endpoints.
+
 ## Available endpoints
 ![This are the endpoints](/img/endpoints.png)
