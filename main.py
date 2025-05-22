@@ -44,7 +44,7 @@ async def ReadUserMe(user : User):
 
 # User Section init
 # CRUD operations
-@app.put("/User/{User}")
+@app.put("/User")
 async def PutUser(user : User):
     users.append({"User" : user})
     db.dict = dict(user)
@@ -63,7 +63,7 @@ async def GetUser(userId:str):
 
 # Car section init
 # CRUD operations
-@app.put("/Car/{Car}")
+@app.put("/Car")
 async def PostCar(car : Car):
     cars.append({"Car" : car})
     db.dict = dict(car)

@@ -35,7 +35,7 @@ class ApiDb ():
         except Exception as e:
             print("File not found")
             print(f'caught{type(e)}: e{e}')
-            self.CreeateDB()
+            self.CreateDB()
 
     def RunTableLines(self):
         print("Creating table lines")
@@ -68,7 +68,7 @@ class ApiDb ():
         self.CreateTable()
         # db.GetItem("2")
 
-    def CreeateDB(self):
+    def CreateDB(self):
         try:
             print(f"API DB is already created as {self.apiDb}")
         except:
@@ -121,7 +121,7 @@ class ApiDb ():
         self.fields = (self.dict["brand"], self.dict["model"], self.dict["color"], int(self.dict["year"]))
 
     def SetInstructionAndFieldsUser(self):
-        self.instruction = '''INSERT INTO USERS(Name, LastName, Email, Password, Position) VALUES(?,?,?,?)'''
+        self.instruction = '''INSERT INTO USERS(Name, LastName, Email, Password, Position) VALUES(?,?,?,?,?)'''
         self.fields = (self.dict["name"], self.dict["lastName"], self.dict["email"], self.dict["password"], self.dict["position"])
 
     def SetInstructionAndFieldsChanges(self):
