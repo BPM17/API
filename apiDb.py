@@ -65,6 +65,14 @@ class ApiDb ():
             carId INTEGER,
             Timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
         ) """)
+        # Create EndpointsTable
+        # TODO: Review if its posible to create a list and register in the DB
+        self.table.append(""" CREATE TABLE IF NOT EXISTS ENDPOINTS(
+            id INTEGER PRIMARY KEY,
+            endpointName VARCHAR(100) NOT NULL,
+            numberFields INTEGER,
+            Timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+        ) """)
         self.CreateTable()
         # db.GetItem("2")
 
@@ -85,7 +93,10 @@ class ApiDb ():
             data = self.cursor.fetchall()
         elif int == 1:
             self.cursor.execute("""SELECT * FROM Users""")
-            data = self.cursor.fetchall()    
+            data = self.cursor.fetchall()
+        elif int == 2:
+            self.cursor.execute("""SELECT * FROM Endpoints""")
+            data = self.cursor.fetchall()
         return data
     
     def GetItem(self, int, str):
@@ -127,6 +138,10 @@ class ApiDb ():
     def SetInstructionAndFieldsChanges(self):
         self.instruction = '''INSERT INTO CHANGES(UserId, CarId) VALUES(?,?)'''
         self.fields = (self.dict["userId"], self.dict["carId"])
+    
+    def SetInstructionAndFieldsEndpoints(self):
+        self.instruction = '''INSERT INTO ENDPOINTS(endpointName, numberFields) VALUES(?,?)'''
+        self.fields = (self.dict["endpointName"], self.dict["numberFields"])
 
     def ProcessToCarTable(self):
         self.SetInstructionAndFieldsCar()
@@ -138,6 +153,10 @@ class ApiDb ():
 
     def ProcessToRegister(self):
         self.SetInstructionAndFieldsChanges()
+        self.AddToTable()
+
+    def ProcessToEndpoints(self):
+        self.SetInstructionAndFieldsEndpoints()
         self.AddToTable()
 
     def LogIn(self):

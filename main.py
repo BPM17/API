@@ -8,6 +8,7 @@ from passlib.context import CryptContext
 from apiDb import ApiDb
 from Car import Car
 from User import User
+from Endpoint import Endpoint
 
 #Objects and Variables
 app = FastAPI()
@@ -16,6 +17,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl = "token")
 items = []
 users = []
 cars = []
+endpoints = []
 db = ApiDb()
 
 # Functions
@@ -76,6 +78,19 @@ async def GetCars():
     return data
 
 @app.get("/Car/{carId}")
-def GetCar(carId:str):
+async def GetCar(carId:str):
     data = db.GetItem(0, carId)
     return data
+
+# Endpoints section
+@app.get("/Endpoints")
+async def GetEndpoints():
+    data = db.GetTable(2)
+    return data
+
+@app.put("/Endpoint")
+async def PutEndpoint(endpoint : Endpoint):
+    endpoints.append({"Endpoint" : endpoint})
+    db.dict = dict(endpoint)
+    db.ProcessToEndpoints()
+    return "The new Endpoint has been created"
