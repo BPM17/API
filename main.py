@@ -46,40 +46,41 @@ async def ReadUserMe(user : User):
 
 # User Section init
 # CRUD operations
-@app.put("/User")
+@app.put("/putuser")
 async def PutUser(user : User):
     users.append({"User" : user})
     db.dict = dict(user)
     db.ProcessToUserTable()
     return "The User has been added correctly"
 
-@app.get("/Users")
+@app.get("/getusers")
 async def GetUsers():
     data = db.GetTable(1)
     return data
 
-@app.get("/Users/{userId}")
+@app.get("/getuser/{userId}")
 async def GetUser(userId:str):
     data = db.GetItem(1,userId)
     return data
 
 # Car section init
 # CRUD operations
-@app.put("/Car")
+@app.put("/putcar")
 async def PostCar(car : Car):
     cars.append({"Car" : car})
     db.dict = dict(car)
     db.ProcessToCarTable()
     return "The Car has been added correctly"
 
-@app.get("/Car")
+@app.get("/getcars")
 async def GetCars():
     data = db.GetTable(0)
     return data
 
-@app.get("/Car/{carId}")
+@app.get("/getcar/{carId}")
 async def GetCar(carId:str):
     data = db.GetItem(0, carId)
+    print(data)
     return data
 
 # Endpoints section
