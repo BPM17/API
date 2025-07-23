@@ -15,7 +15,7 @@ This is intended to practice, it´s developed with FastAPI library to get use to
 ![addcar](/img/getcarpm.png)
 
 - PUT -> adduser: It's available to send and create a new vehicle register into DB.
-![adduser](/img/addsuerpm.png)
+![adduser](/img/adduserpm.png)
 
 - GET -> getusers: It brings all records stored in DB.
 ![addusers](/img/getuserspm.png)
