@@ -12,13 +12,13 @@ This is intended to practice, it´s developed with FastAPI library to get use to
 ![getcars](/img/getcarspm.png)
 
 - GET -> getcar: It brings a specific record from DB it requires an ID.
-![addcar](/img/addcarpm.png)
+![addcar](/img/getcarpm.png)
 
 - PUT -> adduser: It's available to send and create a new vehicle register into DB.
 ![adduser](/img/addsuerpm.png)
 
 - GET -> getusers: It brings all records stored in DB.
-![addusers](/img/adduserspm.png)
+![addusers](/img/getuserspm.png)
 
 - GET -> getuser: It brings a specific record from DB it requires an ID.
-![adduser](/img/adduserpm.png)
+![adduser](/img/getuserpm.png)
