@@ -22,3 +22,5 @@ This is intended to practice, it´s developed with FastAPI library to get use to
 
 - GET -> getuser: It brings a specific record from DB it requires an ID.
 ![adduser](/img/getuserpm.png)
+
+Tested using postman.
